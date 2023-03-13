@@ -1,9 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 Jan H. Voigt
- * Copyright (c) 2022 Wesley Ellis
- * Copyright (c) 2022 Niclas Hoyer
+ * Copyright (c) 2023 Konrad Rieck
+ * Copyright (c) 2022 Joey Castillo
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,48 +23,41 @@
  * SOFTWARE.
  */
 
-//-----------------------------------------------------------------------------
+#ifndef WORLD_CLOCK2_FACE_H_
+#define WORLD_CLOCK2_FACE_H_
 
-#ifndef SAILING_FACE_H_
-#define SAILING_FACE_H_
+/* Number of zones. See movement_timezone_offsets. */
+#define NUM_TIME_ZONES  41
 
 #include "movement.h"
 
-/*
-A sailing sailing/timer face
-*/
-
-
 typedef enum {
-    sl_waiting,
-    sl_running,
-    sl_setting,
-    sl_counting
-} sailing_mode_t;
+    WORLD_CLOCK2_MODE_DISPLAY,
+    WORLD_CLOCK2_MODE_SETTINGS
+} world_clock2_mode_t;
 
 typedef struct {
-    uint8_t watch_face_index;
-    uint32_t target_ts;
-    uint32_t now_ts;
-    uint32_t nextbeep_ts;
-    uint8_t index;
-    uint8_t minutes[6];
-    uint8_t selection;
-    sailing_mode_t mode;
-} sailing_state_t;
+    bool selected;
+} world_clock2_zone_t;
 
+typedef struct {
+    world_clock2_zone_t zones[NUM_TIME_ZONES];
+    world_clock2_mode_t current_mode;
+    uint8_t current_zone;
+    uint32_t previous_date_time;
+} world_clock2_state_t;
 
-void sailing_face_setup(movement_settings_t *settings, uint8_t watch_face_index, void ** context_ptr);
-void sailing_face_activate(movement_settings_t *settings, void *context);
-bool sailing_face_loop(movement_event_t event, movement_settings_t *settings, void *context);
-void sailing_face_resign(movement_settings_t *settings, void *context);
+void world_clock2_face_setup(movement_settings_t *settings, uint8_t watch_face_index, void **context_ptr);
+void world_clock2_face_activate(movement_settings_t *settings, void *context);
+bool world_clock2_face_loop(movement_event_t event, movement_settings_t *settings, void *context);
+void world_clock2_face_resign(movement_settings_t *settings, void *context);
 
-#define sailing_face ((const watch_face_t){ \
-    sailing_face_setup, \
-    sailing_face_activate, \
-    sailing_face_loop, \
-    sailing_face_resign, \
+#define world_clock2_face ((const watch_face_t){ \
+    world_clock2_face_setup, \
+    world_clock2_face_activate, \
+    world_clock2_face_loop, \
+    world_clock2_face_resign, \
     NULL, \
 })
 
-#endif // sailing_FACE_H_
+#endif /* WORLD_CLOCK2_FACE_H_ */
